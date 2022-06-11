@@ -1,4 +1,4 @@
-import {CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize} from 'sequelize';
+import {CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize} from 'sequelize';
 
 import {compareSync, hash} from 'bcrypt';
 
@@ -7,11 +7,12 @@ import {compareSync, hash} from 'bcrypt';
 // ! Cuidado ao criar novos models, a tipagem deles tem que ser bem definida, já que é uma abstração de alto nível da base de dados.
 
 export default class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: number;
+  declare id: string;
   declare username: string;
   declare email: string;
   declare password_hash: string;
   declare password: string;
+  declare lastLogin: Date;
 
   // * Por padrão, todas as tabelas terão esses dois campos
   declare createdAt: CreationOptional<Date>;
@@ -20,14 +21,16 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
   static modelInit(sequelize: Sequelize) {
     this.init({
       id: {
-        type: DataTypes.BIGINT.UNSIGNED,
+        type: DataTypes.UUIDV4,
         primaryKey: true,
-        autoIncrement: true,
       },
       username: {
         type: new DataTypes.CHAR(100),
         allowNull: false,
-        unique: 'Nome de usuário já existe'
+        unique: {
+          name: 'username',
+          msg: 'Nome de usuário já existe'
+        }
       },
       email: {
         type: new DataTypes.CHAR(100),
@@ -52,6 +55,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
           },
         }
       },
+      lastLogin: DataTypes.DATE,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE
     },{
@@ -66,8 +70,8 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
     });
   }
 
-  static associate(models) {
-    this.hasOne(models.Author, { foreignKey: 'user_id'});
+  static associate(models: {[key: string]: ModelStatic<Model>;}): void {
+    this.hasOne(models.Author, {onDelete: 'CASCADE'});
   }
 
   passwordIsValid(password: string):boolean {

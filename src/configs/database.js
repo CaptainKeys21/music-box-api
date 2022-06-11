@@ -1,8 +1,6 @@
-import { Options } from 'sequelize/types';
-
 // * configurações da base de dados;
 // TODO: posteriormente, inserir esses dados em um .env
-const databaseConfig: Options = {
+const databaseConfig = {
   dialect: 'mysql',
   host: 'localhost',
   port: 3306,
@@ -21,4 +19,4 @@ const databaseConfig: Options = {
   timezone: 'America/Sao_Paulo',
 };
 
-export default databaseConfig;
+module.exports = databaseConfig;
