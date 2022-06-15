@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // * configurações da base de dados;
-// TODO: posteriormente, inserir esses dados em um .env
+require('dotenv').config();
+
 const databaseConfig = {
   dialect: 'mysql',
   host: 'localhost',
   port: 3306,
-  username: 'usuario',
-  password: 'senha',
-  database: 'base_de_dados',
+  username: process.env.DB_USER,
+  password: process.env.DB_PWD,
+  database: process.env.DB_NAME,
   define: {
     timestamps: true,
     underscored: true,
