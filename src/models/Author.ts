@@ -1,4 +1,4 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize/types';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize';
 
 export default class Author extends Model<InferAttributes<Author>, InferCreationAttributes<Author>> {
   declare id: string;
@@ -14,7 +14,7 @@ export default class Author extends Model<InferAttributes<Author>, InferCreation
   static modelInit(sequelize: Sequelize) {
     this.init({
       id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         primaryKey: true
       },
       slug: {
@@ -65,13 +65,8 @@ export default class Author extends Model<InferAttributes<Author>, InferCreation
   }
 
   static associate(models: {[key: string]: ModelStatic<Model>;}): void {
-    this.belongsTo(models.User, {
-      foreignKey: {
-        name: 'fkUserId',
-        allowNull: false
-      }
-    });
+    this.belongsTo(models.User);
 
-    this.hasMany(models.ContentManager, {foreignKey: 'fkAuthorId'});
+    this.hasMany(models.ContentManager);
   }
 }

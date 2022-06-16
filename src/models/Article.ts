@@ -1,4 +1,4 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize/types';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize';
 
 export default class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Article>> {
   declare id: string;
@@ -13,7 +13,7 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
   static modelInit(sequelize: Sequelize): void {
     this.init({
       id:{
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true
       },
@@ -52,6 +52,6 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
   }
 
   static associate(models: {[key: string]: ModelStatic<Model>;}) {
-    this.hasMany(models.ContentManager, {foreignKey: 'fkArticleId'});
+    this.hasMany(models.ContentManager);
   }
 }

@@ -1,4 +1,5 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize/types';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize';
+
 
 export default class ContentManager extends Model<InferAttributes<ContentManager>, InferCreationAttributes<ContentManager>> {
   declare createdAt: CreationOptional<Date>;
@@ -17,5 +18,6 @@ export default class ContentManager extends Model<InferAttributes<ContentManager
   static associate(models: {[key: string]: ModelStatic<Model>;}): void {
     this.belongsTo(models.Author, {onDelete: 'CASCADE'});
     this.belongsTo(models.History, {onDelete: 'CASCADE'});
+    this.belongsTo(models.Article, {onDelete: 'CASCADE'});
   }
 }

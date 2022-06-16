@@ -21,7 +21,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
   static modelInit(sequelize: Sequelize) {
     this.init({
       id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         primaryKey: true,
       },
       username: {
