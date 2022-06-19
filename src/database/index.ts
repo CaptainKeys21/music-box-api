@@ -1,18 +1,16 @@
 import { Options, Sequelize } from 'sequelize';
-import databaseConfig from '../configs/database' ;
-import Article from '../models/Article';
-import Author from '../models/Author';
-import ContentManager from '../models/ContentManager';
-import History from '../models/History';
-import User from '../models/User';
-// * o arquivo index da database será por onde os models realizaram a conexão com a base de dados e associações entre tabelas
+import databaseConfig from '../configs/database';
+import Article from '../models/Article.model';
+import Profile from '../models/Profile.model';
+import History from '../models/History.model';
+import User from '../models/User.model';
 
-const models = [User, Author, ContentManager, History, Article]; // * Toda vez que um model for criado, insira no array
+const models = [User, Profile, History, Article];
 
-export const sequelize = new Sequelize(<Options>databaseConfig); // * criação da conexão com sequelize, passando as configurações da base de dados em '/configs/database'
+export const sequelize = new Sequelize(<Options>databaseConfig);
 
-models.forEach((model) => model.modelInit(sequelize)); // * iniciando o model com a conexão do sequelize
-models.forEach((model) => {model.associate && model.associate(sequelize.models);}); // * executando associações entre tableas, se o método estático associate estiver definido no model
+models.forEach((model) => model.modelInit(sequelize));
+models.forEach((model) => model.associate && model.associate(sequelize.models));
 models.forEach((model) => model.sync());
 
 console.log('test');
