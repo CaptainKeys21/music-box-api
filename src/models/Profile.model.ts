@@ -8,13 +8,14 @@ import {
   Sequelize,
 } from 'sequelize';
 
-export default class Author extends Model<InferAttributes<Author>, InferCreationAttributes<Author>> {
+export default class Profile extends Model<InferAttributes<Profile>, InferCreationAttributes<Profile>> {
   declare id: string;
   declare slug: string;
-  declare authorName: string;
+  declare profileName: string;
   declare local: string;
   declare website: string;
   declare bio: string;
+  declare imageUrl: string;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -46,18 +47,29 @@ export default class Author extends Model<InferAttributes<Author>, InferCreation
           },
         },
 
-        authorName: {
+        profileName: {
           type: new DataTypes.CHAR(100),
-          allowNull: true,
+          allowNull: false,
+          defaultValue: '',
+          validate: {
+            len: {
+              args: [3, 100],
+              msg: 'Nome de perfil deve conter entre 3 e 100 caracteres',
+            },
+            is: {
+              args: /^[a-zA-Z áàâãéèêíïóôõöúçñ]+$/i,
+              msg: 'Nome de perfil não pode conter caracteres especiais',
+            },
+          },
         },
 
         local: {
-          type: new DataTypes.CHAR(100),
+          type: new DataTypes.CHAR(255),
           allowNull: true,
         },
 
         website: {
-          type: new DataTypes.CHAR(100),
+          type: new DataTypes.CHAR(255),
           allowNull: true,
           validate: {
             isUrl: {
@@ -71,18 +83,25 @@ export default class Author extends Model<InferAttributes<Author>, InferCreation
           allowNull: true,
         },
 
+        imageUrl: {
+          type: new DataTypes.CHAR(),
+          defaultValue: '', //TODO: aqui vai vir o caminho/url da foto de perfil padrão de todos os usuários.
+          allowNull: false,
+        },
+
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
       },
       {
-        tableName: 'Author',
+        tableName: 'Profiles',
         sequelize,
       },
     );
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }): void {
-    this.belongsTo(models.User);
-    this.hasMany(models.ContentManager);
+    this.belongsTo(models.User, { foreignKey: 'user_id' });
+    this.hasMany(models.Article);
+    this.hasMany(models.History);
   }
 }
