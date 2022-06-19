@@ -3,7 +3,7 @@ import express, { Application } from 'express';
 class App {
   readonly app: Application;
 
-  constructor(){
+  constructor() {
     this.app = express();
     this.middlewares();
     this.routes();

@@ -1,4 +1,12 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from 'sequelize';
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  ModelStatic,
+  Sequelize,
+} from 'sequelize';
 
 export default class Author extends Model<InferAttributes<Author>, InferCreationAttributes<Author>> {
   declare id: string;
@@ -12,61 +20,69 @@ export default class Author extends Model<InferAttributes<Author>, InferCreation
   declare updatedAt: CreationOptional<Date>;
 
   static modelInit(sequelize: Sequelize) {
-    this.init({
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true
-      },
-      slug: {
-        type: new DataTypes.CHAR(36),
-        allowNull: false,
-        unique:{
-          name: 'slug',
-          msg: 'Url já existe'
+    this.init(
+      {
+        id: {
+          type: DataTypes.UUID,
+          primaryKey: true,
         },
-        validate: {
-          min: {
-            args: [8],
-            msg: 'Url deve ter no mínimo 8 caracteres',
+
+        slug: {
+          type: new DataTypes.CHAR(36),
+          allowNull: false,
+          unique: {
+            name: 'slug',
+            msg: 'Url já existe',
           },
-          is: {
-            args: /^[a-z0-9]+$/i,
-            msg: 'Url não pode ter caracteres especiais',
-          }
-        }
+          validate: {
+            min: {
+              args: [8],
+              msg: 'Url deve ter no mínimo 8 caracteres',
+            },
+            is: {
+              args: /^[a-z0-9]+$/i,
+              msg: 'Url não pode ter caracteres especiais',
+            },
+          },
+        },
+
+        authorName: {
+          type: new DataTypes.CHAR(100),
+          allowNull: true,
+        },
+
+        local: {
+          type: new DataTypes.CHAR(100),
+          allowNull: true,
+        },
+
+        website: {
+          type: new DataTypes.CHAR(100),
+          allowNull: true,
+          validate: {
+            isUrl: {
+              msg: 'URL inválida',
+            },
+          },
+        },
+
+        bio: {
+          type: new DataTypes.CHAR(1024),
+          allowNull: true,
+        },
+
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
       },
-      authorName: {
-        type: new DataTypes.CHAR(100),
-        allowNull: true,
+      {
+        tableName: 'Author',
+        sequelize,
       },
-      local: {
-        type: new DataTypes.CHAR(100),
-        allowNull: true,
-      },
-      website: {
-        type: new DataTypes.CHAR(100),
-        allowNull: true,
-        validate: {
-          isUrl: {
-            msg: 'URL inválida'
-          }
-        }
-      },
-      bio: {
-        type: new DataTypes.CHAR(1024),
-        allowNull: true,
-      },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-    },{
-      tableName: 'Author',
-      sequelize
-    });
+    );
   }
 
-  static associate(models: {[key: string]: ModelStatic<Model>;}): void {
+  static associate(models: { [key: string]: ModelStatic<Model> }): void {
     this.belongsTo(models.User);
-
     this.hasMany(models.ContentManager);
   }
 }
