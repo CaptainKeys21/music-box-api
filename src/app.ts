@@ -1,5 +1,6 @@
-import express, { Application } from 'express';
-
+import './database'
+import express, { Application, urlencoded } from 'express';
+import userRoutes from './routes/user.routes'
 class App {
   readonly app: Application;
 
@@ -10,11 +11,12 @@ class App {
   }
 
   private middlewares(): void {
-    // middlewares aqui
+    this.app.use(urlencoded({extended:true}))
+    this.app.use(express.json());
   }
 
   private routes(): void {
-    // rotas aqui
+    this.app.use('/user', userRoutes);
   }
 }
 

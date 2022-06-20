@@ -15,27 +15,28 @@ import { compareSync, hash } from 'bcrypt';
 // ! Cuidado ao criar novos models, a tipagem deles tem que ser bem definida, já que é uma abstração de alto nível da base de dados.
 
 export default class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare username: string;
   declare email: string;
-  declare password_hash: string;
+  declare password_hash: CreationOptional<string>;
   declare password: string;
-  declare lastLogin: Date;
+  declare lastLogin: CreationOptional<Date>;
 
   // * Por padrão, todas as tabelas terão esses dois campos
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 
   static modelInit(sequelize: Sequelize) {
     this.init(
       {
         id: {
           type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
 
         username: {
-          type: new DataTypes.CHAR(100),
+          type: DataTypes.CHAR,
           allowNull: false,
           unique: {
             name: 'username',
@@ -44,9 +45,12 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
         },
 
         email: {
-          type: new DataTypes.CHAR(100),
+          type: DataTypes.CHAR,
           allowNull: false,
-          unique: 'E-mail já existe',
+          unique: {
+            name: 'email',
+            msg: 'Este email já foi registrado'
+          },
           validate: {
             isEmail: {
               msg: 'E-mail inválido',
@@ -55,7 +59,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
         },
 
         password_hash: {
-          type: new DataTypes.CHAR(100),
+          type: DataTypes.CHAR,
         },
 
         password: {
@@ -69,9 +73,12 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
           },
         },
 
-        lastLogin: DataTypes.DATE,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
+        lastLogin: {
+          type: DataTypes.DATE,
+          defaultValue: DataTypes.NOW,
+        },
+        created_at: DataTypes.DATE,
+        updated_at: DataTypes.DATE,
       },
       {
         tableName: 'Users',
@@ -87,7 +94,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }): void {
-    this.hasOne(models.Author, { onDelete: 'CASCADE' });
+    this.hasOne(models.Profile, { onDelete: 'CASCADE' });
   }
 
   passwordIsValid(password: string): boolean {

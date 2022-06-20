@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import UserController from '../controllers/User.controller';
+
 
 const router: Router = Router();
 
-router.get('/user' /*controller que não existe */);
-router.post('/user' /*controller que não existe */);
-router.put('/user' /*controller que não existe */);
-router.delete('/user' /*controller que não existe */);
+router.get('/:id', UserController.show);
+router.post('/', UserController.store);
+router.put('/:id', UserController.update);
+router.delete('/:id', UserController.delete);
 
 export default router;

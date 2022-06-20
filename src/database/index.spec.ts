@@ -11,4 +11,3 @@ describe('Database connection', () => {
   });
 });
 
-export {};

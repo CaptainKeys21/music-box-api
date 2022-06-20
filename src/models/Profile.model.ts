@@ -57,7 +57,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
               msg: 'Nome de perfil deve conter entre 3 e 100 caracteres',
             },
             is: {
-              args: /^[a-zA-Z áàâãéèêíïóôõöúçñ]+$/i,
+              args: /^[\w\d áàâãéèêíïóôõöúçñ]+$/i,
               msg: 'Nome de perfil não pode conter caracteres especiais',
             },
           },
@@ -94,6 +94,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
       },
       {
         tableName: 'Profiles',
+        freezeTableName: true,
         sequelize,
       },
     );

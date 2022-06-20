@@ -68,6 +68,6 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }) {
-    this.hasMany(models.ContentManager);
+    //this.hasMany(models.ContentManager);
   }
 }

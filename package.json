@@ -26,12 +26,9 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
     "eslint": "^8.16.0",
-<<<<<<< HEAD
     "jest": "^28.1.1",
-=======
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
->>>>>>> 5df192f23d9a1242e2a0bccefb474bdcdff0336f
     "nodemon": "^2.0.16",
     "prettier": "^2.7.1",
     "sequelize-cli": "^6.4.1",

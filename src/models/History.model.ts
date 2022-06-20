@@ -44,6 +44,6 @@ export default class History extends Model<InferAttributes<History>, InferCreati
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }) {
-    this.hasMany(models.ContentManager);
+    //this.hasMany(models.ContentManager);
   }
 }

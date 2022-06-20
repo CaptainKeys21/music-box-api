@@ -7,10 +7,10 @@ import User from '../models/User.model';
 
 const models = [User, Profile, History, Article];
 
-export const sequelize = new Sequelize(<Options>databaseConfig);
+const sequelize = new Sequelize(<Options>databaseConfig);
 
 models.forEach((model) => model.modelInit(sequelize));
 models.forEach((model) => model.associate && model.associate(sequelize.models));
 models.forEach((model) => model.sync());
 
-console.log('test');
+export default sequelize;
