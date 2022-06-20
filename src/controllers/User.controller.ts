@@ -1,21 +1,21 @@
-import { Request, Response } from "express";
-import { BaseError, Sequelize, ValidationError } from 'sequelize'
-import User from "../models/User.model";
+import { Request, Response } from 'express';
+import { BaseError, Sequelize, ValidationError } from 'sequelize';
+import User from '../models/User.model';
 
 class UserController {
   async store(req: Request, res: Response): Promise<Response> {
     try {
       const newUser = await User.create(req.body);
-      return res.status(200).json(newUser.id);
+      return res.status(200).json(newUser);
     } catch (e) {
-      if(e instanceof ValidationError){
+      if (e instanceof ValidationError) {
         return res.status(400).json({
-          errors: e.errors.map(err => err.message),
+          errors: e.errors.map((err) => err.message),
         });
       }
       return res.status(400).json({
-        errors: ['Erro Desconhecido']
-      })
+        errors: ['Erro Desconhecido'],
+      });
     }
   }
 
@@ -23,17 +23,16 @@ class UserController {
     try {
       const user = await User.findByPk(req.params.id);
 
-      if(!user) {
+      if (!user) {
         return res.status(400).json({
-          errors: ['Usuário não existe']
+          errors: ['Usuário não existe'],
         });
       }
 
-      return res.status(200).json({user})
-
+      return res.status(200).json({ user });
     } catch (e) {
       return res.status(400).json({
-        errors: ['Usuário não existe']
+        errors: ['Usuário não existe'],
       });
     }
   }
@@ -42,19 +41,19 @@ class UserController {
     try {
       const user = await User.findByPk(req.params.id);
 
-      if(!user) {
+      if (!user) {
         return res.status(400).json({
-          errors: ['Usuário não existe']
+          errors: ['Usuário não existe'],
         });
       }
 
       const newData = await user.update(req.body);
-      const {id, username, email} = newData;
+      const { id, username, email } = newData;
 
-      return res.json({id, username, email});
+      return res.json({ id, username, email });
     } catch (e) {
       return res.status(400).json({
-        errors: ['Usuário não existe']
+        errors: ['Usuário não existe'],
       });
     }
   }
@@ -63,9 +62,9 @@ class UserController {
     try {
       const user = await User.findByPk(req.params.id);
 
-      if(!user) {
+      if (!user) {
         return res.status(400).json({
-          errors: ['Usuário não existe']
+          errors: ['Usuário não existe'],
         });
       }
 

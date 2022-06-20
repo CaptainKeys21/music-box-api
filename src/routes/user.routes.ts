@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import UserController from '../controllers/User.controller';
 
-
 const router: Router = Router();
 
 router.get('/:id', UserController.show);
