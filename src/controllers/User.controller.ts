@@ -6,7 +6,7 @@ class UserController {
   async store(req: Request, res: Response): Promise<Response> {
     try {
       const newUser = await User.create(req.body);
-      return res.status(200).json(newUser.id);
+      return res.status(200).json(newUser);
     } catch (e) {
       if (e instanceof ValidationError) {
         return res.status(400).json({

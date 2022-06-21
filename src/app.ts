@@ -1,6 +1,6 @@
-import './database'
+import './database';
 import express, { Application, urlencoded } from 'express';
-import userRoutes from './routes/user.routes'
+import userRoutes from './routes/user.routes';
 class App {
   readonly app: Application;
 
@@ -11,7 +11,7 @@ class App {
   }
 
   private middlewares(): void {
-    this.app.use(urlencoded({extended:true}))
+    this.app.use(urlencoded({ extended: true }));
     this.app.use(express.json());
   }
 

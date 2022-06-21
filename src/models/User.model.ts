@@ -37,7 +37,18 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
 
         username: {
           type: DataTypes.CHAR,
+          defaultValue: '',
           allowNull: false,
+          validate: {
+            len: {
+              args: [3, 50],
+              msg: 'Nome de usuário deve conter entre 3 e 50 caracteres.',
+            },
+            is: {
+              args: /^[a-z0-9_]+$/i,
+              msg: 'Nome de usuário não pode conter espaços e caracteres especiais',
+            },
+          },
           unique: {
             name: 'username',
             msg: 'Nome de usuário já existe',
@@ -46,6 +57,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
 
         email: {
           type: DataTypes.CHAR,
+          defaultValue: '',
           allowNull: false,
           unique: {
             name: 'email',
@@ -65,10 +77,11 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
         password: {
           type: DataTypes.VIRTUAL, // * uma coluna com o tipo virtual só existe no model, ela é util para caso queira ralizar um tratamento especial antes de lançar na base de dados
           allowNull: false,
+          defaultValue: '',
           validate: {
-            min: {
-              args: [6],
-              msg: 'Senha deve possuir no mínimo 6 caracteres',
+            len: {
+              args: [6, 100],
+              msg: 'Senha deve possuir entre 6 e 100 caracteres',
             },
           },
         },
