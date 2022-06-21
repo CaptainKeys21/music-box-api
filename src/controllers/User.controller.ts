@@ -37,6 +37,19 @@ class UserController {
     }
   }
 
+  //! apenas para testes
+  async index(req: Request, res: Response): Promise<Response> {
+    try {
+      const users = await User.findAll();
+
+      return res.status(200).json(users);
+    } catch (e) {
+      return res.status(400).json({
+        errors: ['erro'],
+      });
+    }
+  }
+
   async update(req: Request, res: Response): Promise<Response> {
     try {
       const user = await User.findByPk(req.params.id);
@@ -70,7 +83,7 @@ class UserController {
 
       await user.destroy();
 
-      return res.status(200).json(null);
+      return res.status(200).json({ success: 'Usuário deletado' });
     } catch (e) {
       return res.status(400).json({
         errors: ['Usuário não existe'],

@@ -28,7 +28,7 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
         },
 
         slug: {
-          type: new DataTypes.CHAR(64),
+          type: new DataTypes.STRING(36),
           allowNull: false,
           validate: {
             min: {
@@ -43,8 +43,15 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
         },
 
         title: {
-          type: new DataTypes.STRING(48),
+          type: new DataTypes.STRING(128),
+          defaultValue: '',
           allowNull: false,
+          validate: {
+            len: {
+              args: [3, 128],
+              msg: 'Titúlo do artigo deve conter entre 3 e 128 caracteres.',
+            },
+          },
         },
 
         content: {
@@ -53,7 +60,7 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
         },
 
         imageUrl: {
-          type: new DataTypes.STRING(128),
+          type: DataTypes.STRING(128),
           allowNull: true,
         },
 
@@ -68,6 +75,6 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }) {
-    //this.hasMany(models.ContentManager);
+    // this.belongsToMany(models.Profile, { through: models.ArticleProfiles });
   }
 }

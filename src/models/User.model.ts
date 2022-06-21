@@ -36,7 +36,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
         },
 
         username: {
-          type: DataTypes.CHAR,
+          type: DataTypes.STRING,
           defaultValue: '',
           allowNull: false,
           validate: {
@@ -56,7 +56,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
         },
 
         email: {
-          type: DataTypes.CHAR,
+          type: DataTypes.STRING,
           defaultValue: '',
           allowNull: false,
           unique: {
@@ -71,7 +71,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
         },
 
         password_hash: {
-          type: DataTypes.CHAR,
+          type: DataTypes.STRING,
         },
 
         password: {

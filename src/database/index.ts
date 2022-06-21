@@ -11,6 +11,6 @@ const sequelize = new Sequelize(<Options>databaseConfig);
 
 models.forEach((model) => model.modelInit(sequelize));
 models.forEach((model) => model.associate && model.associate(sequelize.models));
-models.forEach((model) => model.sync());
+sequelize.sync();
 
 export default sequelize;

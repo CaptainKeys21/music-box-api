@@ -29,7 +29,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
         },
 
         slug: {
-          type: new DataTypes.CHAR(36),
+          type: new DataTypes.STRING(36),
           allowNull: false,
           unique: {
             name: 'slug',
@@ -48,7 +48,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
         },
 
         profileName: {
-          type: new DataTypes.CHAR(100),
+          type: new DataTypes.STRING(100),
           allowNull: false,
           defaultValue: '',
           validate: {
@@ -64,12 +64,12 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
         },
 
         local: {
-          type: new DataTypes.CHAR(255),
+          type: new DataTypes.STRING(255),
           allowNull: true,
         },
 
         website: {
-          type: new DataTypes.CHAR(255),
+          type: new DataTypes.STRING(255),
           allowNull: true,
           validate: {
             isUrl: {
@@ -79,12 +79,12 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
         },
 
         bio: {
-          type: new DataTypes.CHAR(1024),
+          type: new DataTypes.STRING(1024),
           allowNull: true,
         },
 
         imageUrl: {
-          type: new DataTypes.CHAR(),
+          type: DataTypes.STRING,
           defaultValue: '', //TODO: aqui vai vir o caminho/url da foto de perfil padrão de todos os usuários.
           allowNull: false,
         },
