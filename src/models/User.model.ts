@@ -49,7 +49,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
           allowNull: false,
           unique: {
             name: 'email',
-            msg: 'Este email já foi registrado'
+            msg: 'Este email já foi registrado',
           },
           validate: {
             isEmail: {

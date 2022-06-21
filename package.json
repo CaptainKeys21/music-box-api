@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon --watch 'src/' --exec npx 'ts-node src/main.ts' -e ts",
+    "dev": "nodemon --watch 'src/' --exec 'ts-node src/main.ts' -e ts",
     "build": "sucrase ./src -d ./dist --transforms typescript,imports"
   },
   "repository": {
