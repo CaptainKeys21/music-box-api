@@ -46,7 +46,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
             },
             is: {
               args: /^[a-z0-9_]+$/i,
-              msg: 'Nome de usuário não pode conter espaços e caracteres especiais',
+              msg: 'Nome de usuário não pode conter espaços, acentos e caracteres especiais ',
             },
           },
           unique: {

@@ -7,15 +7,11 @@ class UserController {
     try {
       const newUser = await User.create(req.body);
       return res.status(200).json(newUser);
-    } catch (e) {
-      if (e instanceof ValidationError) {
-        return res.status(400).json({
-          errors: e.errors.map((err) => err.message),
-        });
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(400).json({ errors: error.errors.map((err) => err.message) });
       }
-      return res.status(400).json({
-        errors: ['Erro Desconhecido'],
-      });
+      return res.status(400).json({ errors: ['Erro Desconhecido'] });
     }
   }
 
@@ -24,16 +20,12 @@ class UserController {
       const user = await User.findByPk(req.params.id);
 
       if (!user) {
-        return res.status(400).json({
-          errors: ['Usuário não existe'],
-        });
+        return res.status(400).json({ errors: ['Usuário não existe'] });
       }
 
       return res.status(200).json({ user });
-    } catch (e) {
-      return res.status(400).json({
-        errors: ['Usuário não existe'],
-      });
+    } catch (error) {
+      return res.status(400).json({ errors: ['Usuário não existe'] });
     }
   }
 
@@ -43,10 +35,8 @@ class UserController {
       const users = await User.findAll();
 
       return res.status(200).json(users);
-    } catch (e) {
-      return res.status(400).json({
-        errors: ['erro'],
-      });
+    } catch (error) {
+      return res.status(400).json({ errors: ['erro'] });
     }
   }
 
@@ -55,19 +45,18 @@ class UserController {
       const user = await User.findByPk(req.params.id);
 
       if (!user) {
-        return res.status(400).json({
-          errors: ['Usuário não existe'],
-        });
+        return res.status(400).json({ errors: ['Usuário não existe'] });
       }
 
       const newData = await user.update(req.body);
       const { id, username, email } = newData;
 
       return res.json({ id, username, email });
-    } catch (e) {
-      return res.status(400).json({
-        errors: ['Usuário não existe'],
-      });
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(400).json({ errors: error.errors.map((err) => err.message) });
+      }
+      return res.status(400).json({ errors: ['Erro Desconhecido'] });
     }
   }
 
@@ -76,18 +65,14 @@ class UserController {
       const user = await User.findByPk(req.params.id);
 
       if (!user) {
-        return res.status(400).json({
-          errors: ['Usuário não existe'],
-        });
+        return res.status(400).json({ errors: ['Usuário não existe'] });
       }
 
       await user.destroy();
 
       return res.status(200).json({ success: 'Usuário deletado' });
-    } catch (e) {
-      return res.status(400).json({
-        errors: ['Usuário não existe'],
-      });
+    } catch (error) {
+      return res.status(400).json({ errors: ['Usuário não existe'] });
     }
   }
 }
