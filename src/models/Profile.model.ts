@@ -102,7 +102,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
 
   static associate(models: { [key: string]: ModelStatic<Model> }): void {
     this.belongsTo(models.User, { foreignKey: 'user_id' });
-    this.hasMany(models.Article);
-    this.hasMany(models.History);
+    // this.hasMany(models.Article);
+    // this.hasMany(models.History);
   }
 }

@@ -11,27 +11,27 @@ module.exports = {
       },
 
       slug: {
-        type: Sequelize.CHAR(36),
+        type: Sequelize.STRING(36),
         allowNull: false,
       },
 
       profile_name: {
-        type: Sequelize.CHAR(100),
+        type: Sequelize.STRING(100),
         allowNull: false,
       },
 
       local: {
-        type: Sequelize.CHAR(255),
+        type: Sequelize.STRING(255),
         allowNull: true,
       },
 
       website: {
-        type: Sequelize.CHAR(255),
+        type: Sequelize.STRING(255),
         allowNull: true,
       },
 
       bio: {
-        type: Sequelize.CHAR(1024),
+        type: Sequelize.STRING(1024),
         allowNull: true,
       },
 

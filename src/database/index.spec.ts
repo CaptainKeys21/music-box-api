@@ -10,3 +10,5 @@ describe('Database connection', () => {
     }
   });
 });
+
+export {}; //* pro typescript não te xingar.

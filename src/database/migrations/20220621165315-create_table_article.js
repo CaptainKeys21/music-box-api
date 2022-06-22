@@ -11,12 +11,12 @@ module.exports = {
       },
 
       slug: {
-        type: Sequelize.CHAR(36),
+        type: Sequelize.STRING(36),
         allowNull: false,
       },
 
       title: {
-        type: Sequelize.CHAR(128),
+        type: Sequelize.STRING(128),
         allowNull: false,
       },
 
@@ -26,7 +26,7 @@ module.exports = {
       },
 
       imageUrl: {
-        type: Sequelize.CHAR(128),
+        type: Sequelize.STRING(128),
         allowNull: true,
       },
 
