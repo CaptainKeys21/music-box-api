@@ -42,7 +42,8 @@ class UserController {
 
   async update(req: Request, res: Response): Promise<Response> {
     try {
-      const user = await User.findByPk(req.params.id);
+      const userSession = req.session.user;
+      const user = await User.findOne({ where: { email: userSession?.email } }); //? tenho minhas dúvidas se usar o operador "?" é uma boa prática.
 
       if (!user) {
         return res.status(400).json({ errors: ['Usuário não existe'] });
@@ -50,6 +51,8 @@ class UserController {
 
       const newData = await user.update(req.body);
       const { id, username, email } = newData;
+
+      req.session.user = { username, email };
 
       return res.json({ id, username, email });
     } catch (error) {
@@ -62,13 +65,15 @@ class UserController {
 
   async delete(req: Request, res: Response): Promise<Response> {
     try {
-      const user = await User.findByPk(req.params.id);
+      const userSession = req.session.user;
+      const user = await User.findOne({ where: { email: userSession?.email } });
 
       if (!user) {
         return res.status(400).json({ errors: ['Usuário não existe'] });
       }
 
       await user.destroy();
+      req.session.destroy((err) => err); //* em vez de destroy() poderia apenas definir a session.user como null.
 
       return res.status(200).json({ success: 'Usuário deletado' });
     } catch (error) {

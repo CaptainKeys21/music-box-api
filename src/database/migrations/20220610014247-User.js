@@ -11,19 +11,19 @@ module.exports = {
       },
 
       username: {
-        type: Sequelize.CHAR(100),
+        type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
       },
 
       email: {
-        type: Sequelize.CHAR(100),
+        type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
       },
 
       password_hash: {
-        type: Sequelize.CHAR(100),
+        type: Sequelize.STRING(100),
         allowNull: false,
       },
 
