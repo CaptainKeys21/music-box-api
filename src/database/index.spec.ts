@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const sequelize = require('./index');
+import sequelize from './index';
 describe('Database connection', () => {
   test('is Connected', async () => {
     expect.assertions(1);
     try {
       await sequelize.authenticate();
     } catch (e) {
-      console.log(e);
+      expect(e).toMatch('error');
     }
   });
 });
-
-export {}; //* pro typescript não te xingar.
