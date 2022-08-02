@@ -1,20 +1,28 @@
 import {
+  Association,
   CreationOptional,
   DataTypes,
+  HasOneGetAssociationMixin,
+  HasOneCreateAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
   Model,
   ModelStatic,
+  NonAttribute,
   Sequelize,
 } from 'sequelize';
 
 import { compareSync, hash } from 'bcrypt';
+import Profile from './Profile.model';
 
 // * Model para a tabela User, ela é inicializada com a classe estática modelInit na /database/index.tsx assim como o método estático associate se ele estiver definido
 
 // ! Cuidado ao criar novos models, a tipagem deles tem que ser bem definida, já que é uma abstração de alto nível da base de dados.
 
-export default class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export default class User extends Model<
+  InferAttributes<User, { omit: 'profile' }>,
+  InferCreationAttributes<User, { omit: 'profile' }>
+> {
   declare id: CreationOptional<string>;
   declare username: string;
   declare email: string;
@@ -23,8 +31,14 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
   declare lastLogin: CreationOptional<Date>;
 
   // * Por padrão, todas as tabelas terão esses dois campos
-  declare created_at: CreationOptional<Date>;
-  declare updated_at: CreationOptional<Date>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+
+  declare profile?: NonAttribute<Profile>;
+  declare createProfile: HasOneCreateAssociationMixin<Profile>;
+  declare getProfile: HasOneGetAssociationMixin<Profile>;
+
+  declare static profile: Association<User, Profile>;
 
   static modelInit(sequelize: Sequelize) {
     this.init(
@@ -90,8 +104,8 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
           type: DataTypes.DATE,
           defaultValue: DataTypes.NOW,
         },
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
       },
       {
         tableName: 'Users',
@@ -112,5 +126,9 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
 
   passwordIsValid(password: string): boolean {
     return compareSync(password, this.password_hash);
+  }
+
+  updateLastLogin(): void {
+    this.update({ lastLogin: Sequelize.fn('NOW') });
   }
 }

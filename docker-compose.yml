@@ -9,5 +9,7 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PWD}
+      TZ: 'GMT-3'
+      PGTZ: 'GMT-3'
     ports:
       - 5432:5432

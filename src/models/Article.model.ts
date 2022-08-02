@@ -75,6 +75,6 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }) {
-    // this.belongsToMany(models.Profile, { through: models.ArticleProfiles });
+    this.belongsToMany(models.Profile, { through: 'Article_Profile' });
   }
 }

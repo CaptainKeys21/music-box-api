@@ -2,6 +2,7 @@ import './database';
 import express, { Application, urlencoded } from 'express';
 import userRoutes from './routes/user.routes';
 import loginRoutes from './routes/login.routes';
+import profileRoutes from './routes/profile.routes';
 
 import sessionConfig from './middlewares/sessionConfig';
 class App {
@@ -22,6 +23,7 @@ class App {
   private routes(): void {
     this.app.use('/user', userRoutes);
     this.app.use('/login', loginRoutes);
+    this.app.use('/profile', profileRoutes);
   }
 }
 

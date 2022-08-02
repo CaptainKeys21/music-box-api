@@ -1,4 +1,6 @@
+import { Op } from 'sequelize';
 import {
+  BelongsToGetAssociationMixin,
   CreationOptional,
   DataTypes,
   InferAttributes,
@@ -7,24 +9,28 @@ import {
   ModelStatic,
   Sequelize,
 } from 'sequelize';
+import User from './User.model';
 
 export default class Profile extends Model<InferAttributes<Profile>, InferCreationAttributes<Profile>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare slug: string;
-  declare profileName: string;
-  declare local: string;
-  declare website: string;
-  declare bio: string;
-  declare imageUrl: string;
+  declare profileName: CreationOptional<string>;
+  declare local: CreationOptional<string>;
+  declare website: CreationOptional<string>;
+  declare bio: CreationOptional<string>;
+  declare imageUrl: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare getUser: BelongsToGetAssociationMixin<User>;
 
   static modelInit(sequelize: Sequelize) {
     this.init(
       {
         id: {
           type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
 
@@ -49,12 +55,11 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
 
         profileName: {
           type: new DataTypes.STRING(100),
-          allowNull: false,
-          defaultValue: '',
+          allowNull: true,
           validate: {
             len: {
-              args: [3, 100],
-              msg: 'Nome de perfil deve conter entre 3 e 100 caracteres',
+              args: [0, 100],
+              msg: 'Nome de perfil pode conter no máximo 100 caracteres',
             },
             is: {
               args: /^[\w\d áàâãéèêíïóôõöúçñ]+$/i,
@@ -101,8 +106,30 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
   }
 
   static associate(models: { [key: string]: ModelStatic<Model> }): void {
-    this.belongsTo(models.User, { foreignKey: 'user_id' });
-    // this.hasMany(models.Article);
-    // this.hasMany(models.History);
+    this.belongsTo(models.User);
+    this.belongsToMany(models.Article, { through: 'Article_Profile' });
+  }
+
+  static async findBySession(user: { email: string; username: string }): Promise<Profile | null> {
+    const profile = await this.findOne({
+      include: { model: User, where: { [Op.or]: [{ email: user.email }, { username: user.username }] } },
+    });
+
+    return profile;
+  }
+
+  //* Função para checar se o usuário é o dono desse perfil
+  async isAuthorized(searchParam: string): Promise<boolean> {
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [{ email: searchParam }, { username: searchParam }],
+      },
+    });
+
+    if (!user) return false;
+
+    if (user.id !== (await this.getUser()).id) return false;
+
+    return true;
   }
 }
