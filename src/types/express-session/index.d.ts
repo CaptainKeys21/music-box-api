@@ -8,6 +8,9 @@ declare module 'express-session' {
       email: string;
       username: string;
     } | null;
+    profile: {
+      id: string;
+    } | null;
   }
 
   //* interface de configuração da sessão.

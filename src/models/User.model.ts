@@ -129,6 +129,6 @@ export default class User extends Model<
   }
 
   updateLastLogin(): void {
-    this.update({ lastLogin: Sequelize.fn('NOW') });
+    this.update({ lastLogin: Sequelize.fn('NOW') }, { silent: true });
   }
 }

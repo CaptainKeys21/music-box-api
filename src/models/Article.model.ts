@@ -1,28 +1,41 @@
+import { BelongsToManyAddAssociationsMixin } from 'sequelize';
 import {
+  Association,
   CreationOptional,
   DataTypes,
   InferAttributes,
   InferCreationAttributes,
   Model,
   ModelStatic,
+  NonAttribute,
   Sequelize,
 } from 'sequelize';
+import Profile from './Profile.model';
 
 export default class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Article>> {
-  declare id: string;
+  declare id: CreationOptional<string>;
   declare slug: string;
   declare title: string;
   declare content: string;
-  declare imageUrl: string;
+  declare imageUrl: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare profiles?: NonAttribute<Profile[]>;
+
+  declare addProfiles: BelongsToManyAddAssociationsMixin<Profile, string>;
+
+  declare static associations: {
+    profiles: Association<Article, Profile>;
+  };
 
   static modelInit(sequelize: Sequelize): void {
     this.init(
       {
         id: {
           type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           allowNull: false,
           primaryKey: true,
         },
@@ -36,7 +49,7 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
               msg: 'Url deve ter no mínimo 8 caracteres',
             },
             is: {
-              args: /^[a-z0-9]+$/i,
+              args: /^[a-z0-9-]+$/i,
               msg: 'Url não pode ter caracteres especiais',
             },
           },
@@ -55,7 +68,7 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
         },
 
         content: {
-          type: new DataTypes.TEXT('long'),
+          type: new DataTypes.TEXT(),
           allowNull: true,
         },
 

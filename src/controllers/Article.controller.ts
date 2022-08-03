@@ -1,11 +1,24 @@
 import { Request, Response } from 'express';
-import { ValidationError } from 'sequelize/types';
+import { ValidationError } from 'sequelize';
 import Article from '../models/Article.model';
 
 class ArticleController {
   async store(req: Request, res: Response): Promise<Response> {
     try {
-      const newArticle = await Article.create(req.body);
+      const userSession = req.session.user;
+      const profileSession = req.session.profile;
+
+      if (!userSession || !profileSession) return res.status(401).json({ errors: ['acesso negado'] });
+
+      const newArticle = await Article.create({
+        slug: req.body.title.replace(/\s/g, '-'),
+        title: req.body.title,
+        content: req.body.content,
+        imageUrl: req.body.imageUrl,
+      });
+
+      newArticle.addProfiles([profileSession.id]);
+
       return res.status(201).json(newArticle);
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -17,13 +30,7 @@ class ArticleController {
 
   async show(req: Request, res: Response): Promise<Response> {
     try {
-      const article = await Article.findOne({ where: { slug: req.params.slug } });
-
-      if (!article) {
-        return res.status(404).json({ errors: ['Artigo não encontrado'] });
-      }
-
-      return res.status(200).json({ article });
+      return res.json(req.params);
     } catch (error) {
       return res.status(500).json({ errors: ['Erro desconhecido'] });
     }
@@ -42,14 +49,14 @@ class ArticleController {
     }
   }
 
-  async update(req: Request, res: Response): Promise<Response> {
-    try {
-      const userSession = req.session.user;
-      if (!userSession) {
-        return res.status(401).json({ errors: ['Usuário não está logado'] });
-      }
-    } catch (error) {}
-  }
+  // async update(req: Request, res: Response): Promise<Response> {
+  //   try {
+  //     const userSession = req.session.user;
+  //     if (!userSession) {
+  //       return res.status(401).json({ errors: ['Usuário não está logado'] });
+  //     }
+  //   } catch (error) {}
+  // }
 }
 
 export default new ArticleController();
