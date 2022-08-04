@@ -3,7 +3,7 @@ import express, { Application, urlencoded } from 'express';
 import userRoutes from './routes/user.routes';
 import loginRoutes from './routes/login.routes';
 import profileRoutes from './routes/profile.routes';
-import articleRoutes from './routes/article.routes';
+import articleRoutes from './routes/articles/article.routes';
 
 import sessionConfig from './middlewares/sessionConfig';
 class App {

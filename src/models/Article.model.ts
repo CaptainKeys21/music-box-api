@@ -12,7 +12,10 @@ import {
 } from 'sequelize';
 import Profile from './Profile.model';
 
-export default class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Article>> {
+export default class Article extends Model<
+  InferAttributes<Article, { omit: 'profiles' }>,
+  InferCreationAttributes<Article, { omit: 'profiles' }>
+> {
   declare id: CreationOptional<string>;
   declare slug: string;
   declare title: string;
@@ -29,6 +32,8 @@ export default class Article extends Model<InferAttributes<Article>, InferCreati
   declare static associations: {
     profiles: Association<Article, Profile>;
   };
+
+  declare static profiles: Profile;
 
   static modelInit(sequelize: Sequelize): void {
     this.init(

@@ -99,7 +99,6 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
       },
       {
         tableName: 'Profiles',
-        freezeTableName: true,
         sequelize,
       },
     );
