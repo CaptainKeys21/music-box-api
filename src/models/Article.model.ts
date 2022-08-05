@@ -48,6 +48,10 @@ export default class Article extends Model<
         slug: {
           type: new DataTypes.STRING(36),
           allowNull: false,
+          unique: {
+            name: 'slug',
+            msg: 'Url já existe',
+          },
           validate: {
             min: {
               args: [8],
