@@ -126,7 +126,6 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
     });
 
     if (!user) return false;
-
     if (user.id !== (await this.getUser()).id) return false;
 
     return true;

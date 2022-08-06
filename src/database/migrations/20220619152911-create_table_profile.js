@@ -36,12 +36,11 @@ module.exports = {
       },
 
       image_url: {
-        type: Sequelize.CHAR,
+        type: Sequelize.STRING,
         allowNull: false,
       },
 
       user_id: {
-        primaryKey: true,
         type: Sequelize.UUID,
         allowNull: false,
         references: {
