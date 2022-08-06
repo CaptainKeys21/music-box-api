@@ -37,7 +37,7 @@ module.exports = {
 
       image_url: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
 
       user_id: {

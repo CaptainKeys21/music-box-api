@@ -90,8 +90,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
 
         imageUrl: {
           type: DataTypes.STRING,
-          defaultValue: '', //TODO: aqui vai vir o caminho/url da foto de perfil padrão de todos os usuários.
-          allowNull: false,
+          allowNull: true,
         },
 
         createdAt: DataTypes.DATE,
