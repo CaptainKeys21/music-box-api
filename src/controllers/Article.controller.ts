@@ -5,10 +5,7 @@ import Article from '../models/Article.model';
 class ArticleController {
   async store(req: Request, res: Response): Promise<Response> {
     try {
-      const userSession = req.session.user;
-      const profileSession = req.session.profile;
-
-      if (!userSession || !profileSession) return res.status(401).json({ errors: ['acesso negado'] });
+      const userSession = req.session.user as UserSession;
 
       const newArticle = await Article.create({
         slug: req.body.title.replace(/\s/g, '-'),
@@ -17,7 +14,7 @@ class ArticleController {
         imageUrl: req.body.imageUrl,
       });
 
-      newArticle.addProfiles([profileSession.id]);
+      newArticle.addProfiles([userSession.profileId]);
 
       return res.status(201).json(newArticle);
     } catch (error) {

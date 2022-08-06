@@ -42,12 +42,7 @@ class ProfileController {
 
   async update(req: Request, res: Response): Promise<Response> {
     try {
-      const userSession = req.session.user;
-
-      if (!userSession) {
-        // * 401 = Não autorizado
-        return res.status(401).json({ errors: ['Acesso Negado'] });
-      }
+      const userSession = req.session.user as UserSession;
 
       const profile = await Profile.findBySession(userSession);
       if (!profile) return res.status(404).json({ errors: ['Perfil não encontrado'] });
@@ -63,6 +58,9 @@ class ProfileController {
 
       return res.status(200).json({ updatedProfile });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(400).json({ errors: error.errors.map((err) => err.message) });
+      }
       return res.status(500).json({ errors: ['Erro desconhecido'] });
     }
   }

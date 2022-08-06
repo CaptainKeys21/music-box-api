@@ -55,7 +55,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
 
         profileName: {
           type: new DataTypes.STRING(100),
-          allowNull: true,
+          allowNull: false,
           validate: {
             len: {
               args: [0, 100],
@@ -78,7 +78,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
           allowNull: true,
           validate: {
             isUrl: {
-              msg: 'URL inválida',
+              msg: 'URL de Website inválida',
             },
           },
         },

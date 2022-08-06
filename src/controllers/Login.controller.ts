@@ -26,12 +26,11 @@ class LoginController {
       const { email, username } = user;
       const { id } = await user.getProfile();
 
-      req.session.user = { email, username };
+      req.session.user = { email, username, profileId: id };
       req.session.loggedIn = true;
-      req.session.profile = { id };
       user.updateLastLogin();
 
-      return res.status(200).json({ message: 'user logged in', user: req.session.user, profile: req.session.profile });
+      return res.status(200).json({ message: 'usuário logado!', user: req.session.user });
     } catch (error) {
       if (error instanceof ValidationError) {
         return res.status(400).json({ errors: error.errors.map((err) => err.message) });

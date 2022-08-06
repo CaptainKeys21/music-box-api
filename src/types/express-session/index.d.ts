@@ -4,13 +4,7 @@ declare module 'express-session' {
   //* interface da sessão de usuário. é um merge da interface que já existe no express-session.
   interface SessionData {
     loggedIn: boolean;
-    user: {
-      email: string;
-      username: string;
-    } | null;
-    profile: {
-      id: string;
-    } | null;
+    user: UserSession | null;
   }
 
   //* interface de configuração da sessão.
