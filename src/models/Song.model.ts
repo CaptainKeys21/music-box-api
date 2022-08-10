@@ -1,4 +1,9 @@
 import {
+  BelongsToCreateAssociationMixin,
+  BelongsToGetAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToSetAssociationMixin,
   CreationOptional,
   DataTypes,
   InferAttributes,
@@ -7,6 +12,8 @@ import {
   ModelStatic,
   Sequelize,
 } from 'sequelize';
+import Album from './Album.model';
+import Profile from './Profile.model';
 
 export default class Song extends Model<InferAttributes<Song>, InferCreationAttributes<Song>> {
   declare id: CreationOptional<string>;
@@ -16,6 +23,13 @@ export default class Song extends Model<InferAttributes<Song>, InferCreationAttr
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare setProfiles: BelongsToManySetAssociationsMixin<Profile, string>;
+  declare getProfiles: BelongsToManyGetAssociationsMixin<Profile>;
+
+  declare getAlbum: BelongsToGetAssociationMixin<Album>;
+  declare setAlbum: BelongsToSetAssociationMixin<Album, string>;
+  declare createAlbum: BelongsToCreateAssociationMixin<Album>; //* esse método será utilizado caso a música não seja adicionada em nenhum álbum
 
   static modelInit(sequelize: Sequelize): void {
     this.init(

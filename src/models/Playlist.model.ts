@@ -1,4 +1,9 @@
 import {
+  BelongsToGetAssociationMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToSetAssociationMixin,
   CreationOptional,
   DataTypes,
   InferAttributes,
@@ -7,6 +12,8 @@ import {
   ModelStatic,
   Sequelize,
 } from 'sequelize';
+import Profile from './Profile.model';
+import Song from './Song.model';
 
 export default class Playlist extends Model<InferAttributes<Playlist>, InferCreationAttributes<Playlist>> {
   declare id: CreationOptional<string>;
@@ -15,6 +22,13 @@ export default class Playlist extends Model<InferAttributes<Playlist>, InferCrea
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare getSongs: BelongsToManyGetAssociationsMixin<Song>;
+  declare addSongs: BelongsToManyAddAssociationMixin<Song, string>;
+  declare removeSongs: BelongsToManyRemoveAssociationMixin<Song, string>;
+
+  declare setProfile: BelongsToSetAssociationMixin<Profile, string>;
+  declare getProfile: BelongsToGetAssociationMixin<Profile>;
 
   static modelInit(sequelize: Sequelize) {
     this.init(

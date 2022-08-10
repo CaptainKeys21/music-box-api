@@ -5,12 +5,10 @@ import User from '../models/User.model';
 class UserController {
   async store(req: Request, res: Response): Promise<Response> {
     try {
-      const newUser = await User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-      });
+      const { username, email, password } = req.body;
+      const newUser = await User.create({ username, email, password });
       const newProfile = await newUser.createProfile({ slug: req.body.username, profileName: req.body.username });
+
       return res.status(201).json({ user: newUser, profile: newProfile });
     } catch (error) {
       if (error instanceof ValidationError) {

@@ -1,4 +1,4 @@
-import { BelongsToManyAddAssociationsMixin } from 'sequelize';
+import { BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin } from 'sequelize';
 import {
   Association,
   CreationOptional,
@@ -28,6 +28,7 @@ export default class Article extends Model<
   declare profiles?: NonAttribute<Profile[]>;
 
   declare addProfiles: BelongsToManyAddAssociationsMixin<Profile, string>;
+  declare getProfiles: BelongsToManyGetAssociationsMixin<Profile>;
 
   declare static associations: {
     profiles: Association<Article, Profile>;
