@@ -62,7 +62,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
               msg: 'Nome de perfil pode conter no máximo 100 caracteres',
             },
             is: {
-              args: /^[\w\d áàâãéèêíïóôõöúçñ]+$/i,
+              args: /^[\w\d À-ú]+$/i,
               msg: 'Nome de perfil não pode conter caracteres especiais',
             },
           },
@@ -106,6 +106,9 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
   static associate(models: { [key: string]: ModelStatic<Model> }): void {
     this.belongsTo(models.User);
     this.belongsToMany(models.Article, { through: 'Article_Profile' });
+    this.belongsToMany(models.Song, { through: 'Song_Profile' });
+    this.belongsToMany(models.Album, { through: 'Album_Profile' });
+    this.hasMany(models.Playlist);
   }
 
   static async findBySession(user: { email: string; username: string }): Promise<Profile | null> {
