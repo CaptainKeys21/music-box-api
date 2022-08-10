@@ -5,6 +5,14 @@ import { resolve } from 'path';
 import { ValidationError } from 'sequelize';
 import { profileImage } from '../configs/multer';
 import Profile from '../models/Profile.model';
+import { CustomRequest, UserSession } from '../types/music-box';
+
+interface UpdateRequestBody {
+  profileName: string;
+  bio: string;
+  local: string;
+  website: string;
+}
 
 const upload = multer(profileImage).single('imageUrl');
 
@@ -46,7 +54,7 @@ class ProfileController {
     }
   }
 
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: CustomRequest<UpdateRequestBody>, res: Response): Promise<void> {
     return upload(req, res, async (error): Promise<Response> => {
       if (error instanceof MulterError) {
         return res.status(400).json({ errors: [error.field] });
@@ -61,7 +69,7 @@ class ProfileController {
         if (!profile) return res.status(404).json({ errors: ['Perfil não encontrado'] });
 
         const filepath = req.file ? `http://localhost:3001/uploads/images/${req.file.filename}` : profile.imageUrl;
-        const { slug, profileName, bio, local, website } = req.body;
+        const { profileName, bio, local, website } = req.body;
 
         //! remove o arquivo da foto anterior caso a foto seja alterada, isso será removido
         if (req.file && profile.imageUrl) {
@@ -69,13 +77,14 @@ class ProfileController {
           unlinkSync(resolve(__dirname, '..', '..', 'static', 'uploads', 'images', fileToDelete));
         }
 
+        if (!profileName) return res.status(400).json({ errors: ['Nome de perfil não enviado'] });
+
         const updatedProfile = await profile.update({
-          slug,
           profileName,
-          bio,
+          bio: bio || null,
           imageUrl: filepath,
-          local,
-          website,
+          local: local || null,
+          website: website || null,
         });
 
         return res.status(200).json({ updatedProfile });

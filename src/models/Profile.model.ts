@@ -24,9 +24,9 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
   declare id: CreationOptional<string>;
   declare slug: string;
   declare profileName: CreationOptional<string>;
-  declare local: CreationOptional<string>;
-  declare website: CreationOptional<string>;
-  declare bio: CreationOptional<string>;
+  declare local: CreationOptional<string | null>;
+  declare website: CreationOptional<string | null>;
+  declare bio: CreationOptional<string | null>;
   declare imageUrl: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;

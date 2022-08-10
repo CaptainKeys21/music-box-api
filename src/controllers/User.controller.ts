@@ -1,9 +1,21 @@
 import { Request, Response } from 'express';
 import { ValidationError } from 'sequelize';
 import User from '../models/User.model';
+import { CustomRequest, UserSession } from '../types/music-box';
+
+interface StoreRequestBody {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface UpdateRequestBody {
+  username?: string;
+  email?: string;
+}
 
 class UserController {
-  async store(req: Request, res: Response): Promise<Response> {
+  async store(req: CustomRequest<StoreRequestBody>, res: Response): Promise<Response> {
     try {
       const { username, email, password } = req.body;
       const newUser = await User.create({ username, email, password });
@@ -43,7 +55,7 @@ class UserController {
     }
   }
 
-  async update(req: Request, res: Response): Promise<Response> {
+  async update(req: CustomRequest<UpdateRequestBody>, res: Response): Promise<Response> {
     try {
       const userSession = req.session.user as UserSession;
       const user = await User.findOne({ where: { email: userSession.email } });
@@ -52,8 +64,8 @@ class UserController {
         return res.status(404).json({ errors: ['Usuário não encontrado'] });
       }
 
-      const newData = await user.update(req.body);
-      const { id, username, email } = newData;
+      const { username: sentUsername, email: sentEmail } = req.body;
+      const { username, email, id } = await user.update({ username: sentUsername, email: sentEmail });
 
       req.session.user = { username, email, profileId: userSession.profileId };
 

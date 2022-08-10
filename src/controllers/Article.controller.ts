@@ -1,17 +1,25 @@
 import { Request, Response } from 'express';
 import { ValidationError } from 'sequelize';
 import Article from '../models/Article.model';
+import { CustomRequest, UserSession } from '../types/music-box';
+
+interface StoreRequestBody {
+  title: string;
+  content: string;
+  imageUrl: string;
+}
 
 class ArticleController {
-  async store(req: Request, res: Response): Promise<Response> {
+  async store(req: CustomRequest<StoreRequestBody>, res: Response): Promise<Response> {
     try {
       const userSession = req.session.user as UserSession;
+      const { content, title, imageUrl } = req.body;
 
       const newArticle = await Article.create({
-        slug: req.body.title.replace(/\s/g, '-'),
-        title: req.body.title,
-        content: req.body.content,
-        imageUrl: req.body.imageUrl,
+        slug: title.replace(/\s/g, '-'),
+        title,
+        content,
+        imageUrl,
       });
 
       newArticle.addProfiles([userSession.profileId]);

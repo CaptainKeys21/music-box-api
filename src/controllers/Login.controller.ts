@@ -1,11 +1,17 @@
 import { Response, Request } from 'express';
 import User from '../models/User.model';
 import { Op, ValidationError } from 'sequelize';
+import { CustomRequest } from '../types/music-box';
+
+interface loginRequestBody {
+  login: string;
+  password: string;
+}
 
 class LoginController {
-  async login(req: Request, res: Response): Promise<Response> {
+  async login(req: CustomRequest<loginRequestBody>, res: Response): Promise<Response> {
     try {
-      const { login = '', password = '' } = req.body; //* login nesse caso será o email ou username.
+      const { login, password } = req.body; //* login nesse caso será o email ou username.
 
       if (!login) return res.status(400).json({ error: ['login não pode ser vazio'] });
       if (!password) return res.status(400).json({ error: ['senha não pode ser vazia'] });
