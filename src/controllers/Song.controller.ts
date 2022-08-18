@@ -5,7 +5,7 @@ import { songs } from '../configs/multer';
 import Album from '../models/Album.model';
 import Profile from '../models/Profile.model';
 import Song from '../models/Song.model';
-import { CustomRequest } from '../types/music-box';
+import { CustomRequest, UserSession } from '../types/music-box';
 import { slugGen } from '../utils/slugGen';
 
 interface StoreRequestBody {
@@ -90,6 +90,29 @@ class SongController {
       const authors = await song.getProfiles();
 
       return res.status(200).json({ song, authors });
+    } catch (error) {
+      return res.status(500).json({ errors: ['Erro Desconhecido'] });
+    }
+  }
+
+  async delete(req: Request, res: Response): Promise<Response> {
+    try {
+      const song = await Song.findOne({ where: { slug: req.params.slug } });
+      const userSession = req.session.user as UserSession;
+
+      if (!song) {
+        return res.status(404).json({ errors: ['Música não encontrada'] });
+      }
+
+      const profiles = await song.getProfiles();
+      const profilesIds = profiles.map((profile) => profile.id);
+
+      if (!profilesIds.includes(userSession.profileId)) {
+        return res.status(500).json({ errors: ['Acesso Negado'] });
+      }
+
+      await song.destroy();
+      return res.status(200).json({ message: 'Música excluída com sucesso' });
     } catch (error) {
       return res.status(500).json({ errors: ['Erro Desconhecido'] });
     }
