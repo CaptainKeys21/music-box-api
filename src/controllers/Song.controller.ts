@@ -11,7 +11,7 @@ import { slugGen } from '../utils/slugGen';
 interface StoreRequestBody {
   name: string;
   albumSlug?: string;
-  authors: string; //* authors será um array com os slugs dos autores
+  colaborators: string; //* colaborators será um array com os usernames dos colaboradores
 }
 
 const upload = multer(songs).single('song');
@@ -26,27 +26,29 @@ class SongController {
       }
 
       try {
-        const { name, albumSlug, authors } = req.body;
-
+        const { name, albumSlug, colaborators } = req.body;
         if (!name) return res.status(400).json({ error: ['Nome da música não enviado'] });
-        if (!authors) return res.status(400).json({ error: ['Nenhum autor foi não enviado'] });
 
-        const authorsArray: string[] = JSON.parse(authors);
-        if (authorsArray.length === 0) return res.status(400).json({ error: ['Nenhum autor foi não enviado'] });
+        const userSession = req.session.user as UserSession;
+
+        const colaboratorsSlugs: string[] = colaborators ? JSON.parse(colaborators) : [];
+        const authors = [...colaboratorsSlugs, userSession.username];
+
+        //* caso seja enviado um usuário repetido, isso irá filtrar.
+        const filteredAuthors = authors.filter((author, index) => authors.indexOf(author) === index);
+        const profiles: Profile[] = [];
+
+        for (const authorSlug of filteredAuthors) {
+          const profile = await Profile.findOne({ where: { slug: authorSlug } });
+          if (!profile) return res.status(400).json({ error: [`Autor '${authorSlug}' inexistente!`] });
+          profiles.push(profile);
+        }
 
         if (!req.file) {
           return res.status(400).json({ errors: ['Nenhuma música enviada!!'] });
         }
 
         const filepath = `http://localhost:3001/uploads/songs/${req.file.filename}`;
-
-        const profiles: Profile[] = [];
-
-        for (const authorSlug of authorsArray) {
-          const profile = await Profile.findOne({ where: { slug: authorSlug } });
-          if (!profile) return res.status(400).json({ error: [`Autor '${authorSlug}' inexistente!`] });
-          profiles.push(profile);
-        }
 
         const song = await Song.create({ name, filename: filepath, slug: slugGen() });
         song.setProfiles(profiles);
@@ -85,7 +87,7 @@ class SongController {
     try {
       const song = await Song.findOne({ where: { slug: req.params.slug } });
       if (!song) {
-        return res.status(404).json({ errors: ['Música não encontrada'] });
+        return res.status(400).json({ errors: ['Música não encontrada'] });
       }
       const authors = await song.getProfiles();
 
@@ -97,18 +99,18 @@ class SongController {
 
   async delete(req: Request, res: Response): Promise<Response> {
     try {
-      const song = await Song.findOne({ where: { slug: req.params.slug } });
       const userSession = req.session.user as UserSession;
+      const song = await Song.findOne({ where: { slug: req.params.slug } });
 
       if (!song) {
-        return res.status(404).json({ errors: ['Música não encontrada'] });
+        return res.status(400).json({ errors: ['Música não encontrada'] });
       }
 
       const profiles = await song.getProfiles();
       const profilesIds = profiles.map((profile) => profile.id);
 
       if (!profilesIds.includes(userSession.profileId)) {
-        return res.status(500).json({ errors: ['Acesso Negado'] });
+        return res.status(401).json({ errors: ['Acesso Negado'] });
       }
 
       await song.destroy();

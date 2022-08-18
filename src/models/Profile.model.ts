@@ -32,7 +32,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
 
   declare getUser: BelongsToGetAssociationMixin<User>;
   declare getSongs: BelongsToManyGetAssociationsMixin<Song>;
-  declare getAlbuns: BelongsToManyGetAssociationsMixin<Album>;
+  declare getAlbums: BelongsToManyGetAssociationsMixin<Album>;
   declare getArticles: BelongsToManyGetAssociationsMixin<Article>;
 
   declare createPlaylist: HasManyCreateAssociationMixin<Playlist>;

@@ -91,7 +91,7 @@ export default class Album extends Model<InferAttributes<Album>, InferCreationAt
         updatedAt: DataTypes.DATE,
       },
       {
-        tableName: 'Albuns',
+        tableName: 'Albums',
         sequelize,
       },
     );

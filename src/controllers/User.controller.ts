@@ -85,6 +85,7 @@ class UserController {
     }
   }
 
+  // TODO essa rota vai excluir também os álbuns e playlists. Mas vou esperar quando for fazer os controllers de ambos.
   async delete(req: Request, res: Response): Promise<Response> {
     try {
       const userSession = req.session.user as UserSession;
@@ -92,6 +93,14 @@ class UserController {
 
       if (!user) {
         return res.status(404).json({ errors: ['Usuário não encontrado'] });
+      }
+
+      const profile = await user.getProfile();
+      const songs = await profile.getSongs();
+
+      for (const song of songs) {
+        const songProfiles = await song.getProfiles();
+        if (songProfiles.length === 1) await song.destroy();
       }
 
       await user.destroy();
