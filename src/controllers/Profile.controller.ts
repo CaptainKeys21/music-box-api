@@ -8,27 +8,27 @@ import Profile from '../models/Profile.model';
 import { CustomRequest, UserSession } from '../types/music-box';
 
 interface UpdateRequestBody {
-  profileName: string;
-  bio: string;
-  local: string;
-  website: string;
+  profileName?: string;
+  bio?: string;
+  local?: string;
+  website?: string;
 }
 
 const upload = multer(profileImage).single('imageUrl');
 
 class ProfileController {
   // * Provavelmente não será usado
-  async store(req: Request, res: Response): Promise<Response> {
-    try {
-      const newProfile = await Profile.create(req.body);
-      return res.status(201).json(newProfile);
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        return res.status(400).json({ errors: error.errors.map((err) => err.message) });
-      }
-      return res.status(500).json({ errors: ['Erro desconhecido'] });
-    }
-  }
+  // async store(req: Request, res: Response): Promise<Response> {
+  //   try {
+  //     const newProfile = await Profile.create(req.body);
+  //     return res.status(201).json(newProfile);
+  //   } catch (error) {
+  //     if (error instanceof ValidationError) {
+  //       return res.status(400).json({ errors: error.errors.map((err) => err.message) });
+  //     }
+  //     return res.status(500).json({ errors: ['Erro desconhecido'] });
+  //   }
+  // }
 
   async show(req: Request, res: Response): Promise<Response> {
     try {
@@ -63,13 +63,13 @@ class ProfileController {
       }
 
       try {
-        const userSession = req.session.user as UserSession;
+        const { profileName, bio, local, website } = req.body;
 
+        const userSession = req.session.user as UserSession;
         const profile = await Profile.findBySession(userSession);
         if (!profile) return res.status(404).json({ errors: ['Perfil não encontrado'] });
 
         const filepath = req.file ? `http://localhost:3001/uploads/images/${req.file.filename}` : profile.imageUrl;
-        const { profileName, bio, local, website } = req.body;
 
         //! remove o arquivo da foto anterior caso a foto seja alterada, isso será removido
         if (req.file && profile.imageUrl) {
@@ -81,12 +81,10 @@ class ProfileController {
           }
         }
 
-        if (!profileName) return res.status(400).json({ errors: ['Nome de perfil não enviado'] });
-
         const updatedProfile = await profile.update({
           profileName,
-          bio: bio || null,
           imageUrl: filepath,
+          bio: bio || null,
           local: local || null,
           website: website || null,
         });
@@ -96,7 +94,6 @@ class ProfileController {
         if (error instanceof ValidationError) {
           return res.status(400).json({ errors: error.errors.map((err) => err.message) });
         }
-        console.log(error);
         return res.status(500).json({ errors: ['Erro desconhecido'] });
       }
     });

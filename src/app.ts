@@ -1,6 +1,7 @@
 import './database';
 import express, { Application, urlencoded } from 'express';
 import userRoutes from './routes/user.routes';
+import songRoutes from './routes/song.routes';
 import loginRoutes from './routes/login.routes';
 import profileRoutes from './routes/profile.routes';
 import articleRoutes from './routes/articles/article.routes';
@@ -25,6 +26,7 @@ class App {
 
   private routes(): void {
     this.app.use('/user', userRoutes);
+    this.app.use('/song', songRoutes);
     this.app.use('/login', loginRoutes);
     this.app.use('/profile', profileRoutes);
     this.app.use('/article', articleRoutes);

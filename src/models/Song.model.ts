@@ -36,6 +36,7 @@ export default class Song extends Model<InferAttributes<Song>, InferCreationAttr
       {
         id: {
           type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           allowNull: false,
           primaryKey: true,
         },

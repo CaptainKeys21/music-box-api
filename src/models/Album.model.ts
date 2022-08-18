@@ -19,6 +19,7 @@ export default class Album extends Model<InferAttributes<Album>, InferCreationAt
   declare id: CreationOptional<string>;
   declare name: string;
   declare slug: string;
+  declare single: CreationOptional<boolean>;
   declare coverImg: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
@@ -36,6 +37,7 @@ export default class Album extends Model<InferAttributes<Album>, InferCreationAt
       {
         id: {
           type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           allowNull: false,
           primaryKey: true,
         },
@@ -74,6 +76,12 @@ export default class Album extends Model<InferAttributes<Album>, InferCreationAt
           },
         },
 
+        single: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
+
         coverImg: {
           type: DataTypes.STRING,
           allowNull: true,
@@ -91,6 +99,6 @@ export default class Album extends Model<InferAttributes<Album>, InferCreationAt
 
   static associate(models: { [key: string]: ModelStatic<Model> }) {
     this.belongsToMany(models.Profile, { through: 'Album_Profile' });
-    this.hasMany(models.Song);
+    this.hasMany(models.Song, { onDelete: 'CASCADE' });
   }
 }
