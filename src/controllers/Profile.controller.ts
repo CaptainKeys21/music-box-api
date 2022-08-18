@@ -74,7 +74,11 @@ class ProfileController {
         //! remove o arquivo da foto anterior caso a foto seja alterada, isso será removido
         if (req.file && profile.imageUrl) {
           const fileToDelete = profile.imageUrl.split('images/')[1];
-          unlinkSync(resolve(__dirname, '..', '..', 'static', 'uploads', 'images', fileToDelete));
+          try {
+            unlinkSync(resolve(__dirname, '..', '..', 'static', 'uploads', 'images', fileToDelete));
+          } catch (error) {
+            //
+          }
         }
 
         if (!profileName) return res.status(400).json({ errors: ['Nome de perfil não enviado'] });

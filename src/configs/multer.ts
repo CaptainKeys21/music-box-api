@@ -1,8 +1,7 @@
 import { Request } from 'express';
 import multer, { FileFilterCallback, MulterError } from 'multer';
 import path from 'path';
-
-const random = () => Math.floor(Math.random() * 10000 + 10000);
+import { slugGen } from '../utils/slugGen';
 
 //* essa função permite a reutilização do objeto "storage" do multer, alterando apenas a pasta de upload.
 function storage(folder: string) {
@@ -13,7 +12,7 @@ function storage(folder: string) {
       },
 
       filename: (request, file, callback) => {
-        callback(null, `${Date.now()}_${random()}${path.extname(file.originalname)}`);
+        callback(null, slugGen() + path.extname(file.originalname));
       },
     }),
   };

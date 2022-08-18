@@ -3,8 +3,6 @@ import {
   HasManyCreateAssociationMixin,
   HasManyGetAssociationsMixin,
   Op,
-} from 'sequelize';
-import {
   BelongsToGetAssociationMixin,
   CreationOptional,
   DataTypes,
