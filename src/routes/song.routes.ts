@@ -5,5 +5,7 @@ import loginRequired from '../middlewares/loginRequired';
 const router: Router = Router();
 
 router.post('/', loginRequired, SongController.store);
+router.get('/:slug', SongController.show);
+router.get('/', SongController.index);
 
 export default router;

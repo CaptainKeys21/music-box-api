@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import multer, { MulterError } from 'multer';
 import { ValidationError } from 'sequelize';
 import { songs } from '../configs/multer';
@@ -68,6 +68,31 @@ class SongController {
         return res.status(500).json({ errors: ['Erro desconhecido'] });
       }
     });
+  }
+
+  //* provavelmente não será usado
+  async index(req: Request, res: Response): Promise<Response> {
+    try {
+      const songs = await Song.findAll();
+
+      return res.status(200).json(songs);
+    } catch (error) {
+      return res.status(500).json({ errors: ['erro'] });
+    }
+  }
+
+  async show(req: Request, res: Response): Promise<Response> {
+    try {
+      const song = await Song.findOne({ where: { slug: req.params.slug } });
+      if (!song) {
+        return res.status(404).json({ errors: ['Música não encontrada'] });
+      }
+      const authors = await song.getProfiles();
+
+      return res.status(200).json({ song, authors });
+    } catch (error) {
+      return res.status(500).json({ errors: ['Erro Desconhecido'] });
+    }
   }
 }
 

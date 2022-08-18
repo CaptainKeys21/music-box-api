@@ -95,7 +95,7 @@ class UserController {
       }
 
       await user.destroy();
-      req.session.destroy((err) => err); //* em vez de destroy() poderia apenas definir a session.user como null.
+      req.session.destroy((err) => err);
 
       return res.status(200).json({ success: 'Usuário deletado' });
     } catch (error) {
