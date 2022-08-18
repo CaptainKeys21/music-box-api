@@ -18,7 +18,7 @@ import Song from './Song.model';
 export default class Playlist extends Model<InferAttributes<Playlist>, InferCreationAttributes<Playlist>> {
   declare id: CreationOptional<string>;
   declare name: string;
-  declare slug: string;
+  declare slug: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -35,6 +35,7 @@ export default class Playlist extends Model<InferAttributes<Playlist>, InferCrea
       {
         id: {
           type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           allowNull: false,
           primaryKey: true,
         },

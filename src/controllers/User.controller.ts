@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ValidationError } from 'sequelize';
 import User from '../models/User.model';
 import { CustomRequest, UserSession } from '../types/music-box';
+import { slugGen } from '../utils/slugGen';
 
 interface StoreRequestBody {
   username: string;
@@ -20,8 +21,9 @@ class UserController {
       const { username, email, password } = req.body;
       const newUser = await User.create({ username, email, password });
       const newProfile = await newUser.createProfile({ slug: req.body.username, profileName: req.body.username });
+      const favoritePlaylist = await newProfile.createPlaylist({ name: 'Favorites', slug: slugGen() });
 
-      return res.status(201).json({ user: newUser, profile: newProfile });
+      return res.status(201).json({ user: newUser, profile: newProfile, favoritePlaylist });
     } catch (error) {
       if (error instanceof ValidationError) {
         return res.status(400).json({ errors: error.errors.map((err) => err.message) });

@@ -121,7 +121,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
     this.belongsToMany(models.Article, { through: 'Article_Profile' });
     this.belongsToMany(models.Song, { through: 'Song_Profile' });
     this.belongsToMany(models.Album, { through: 'Album_Profile' });
-    this.hasMany(models.Playlist);
+    this.hasMany(models.Playlist, { onDelete: 'CASCADE' });
   }
 
   static async findBySession(user: { email: string; username: string }): Promise<Profile | null> {
