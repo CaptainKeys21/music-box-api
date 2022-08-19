@@ -7,8 +7,9 @@ import User from '../models/User.model';
 import Playlist from '../models/Playlist.model';
 import Song from '../models/Song.model';
 import Album from '../models/Album.model';
+import Genre from '../models/Genre.model';
 
-const models = [User, Profile, History, Article, Album, Song, Playlist];
+const models = [User, Profile, History, Article, Album, Song, Playlist, Genre];
 
 const sequelize = new Sequelize(<Options>databaseConfig);
 

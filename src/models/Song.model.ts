@@ -13,6 +13,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import Album from './Album.model';
+import Genre from './Genre.model';
 import Profile from './Profile.model';
 
 export default class Song extends Model<InferAttributes<Song>, InferCreationAttributes<Song>> {
@@ -26,6 +27,8 @@ export default class Song extends Model<InferAttributes<Song>, InferCreationAttr
 
   declare setProfiles: BelongsToManySetAssociationsMixin<Profile, string>;
   declare getProfiles: BelongsToManyGetAssociationsMixin<Profile>;
+  declare getGenres: BelongsToManyGetAssociationsMixin<Genre>;
+  declare setGenres: BelongsToManySetAssociationsMixin<Genre, string>;
 
   declare getAlbum: BelongsToGetAssociationMixin<Album>;
   declare setAlbum: BelongsToSetAssociationMixin<Album, string>;
@@ -97,6 +100,7 @@ export default class Song extends Model<InferAttributes<Song>, InferCreationAttr
   static associate(models: { [key: string]: ModelStatic<Model> }) {
     this.belongsToMany(models.Playlist, { through: 'Song_Playlist' });
     this.belongsToMany(models.Profile, { through: 'Song_Profile' });
+    this.belongsToMany(models.Genre, { through: 'Song_Genre' });
     this.belongsTo(models.Album);
   }
 }

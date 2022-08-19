@@ -5,6 +5,7 @@ import songRoutes from './routes/song.routes';
 import loginRoutes from './routes/login.routes';
 import profileRoutes from './routes/profile.routes';
 import articleRoutes from './routes/articles/article.routes';
+import genreRoutes from './routes/genre.routes';
 
 import sessionConfig from './middlewares/sessionConfig';
 import { resolve } from 'path';
@@ -30,6 +31,7 @@ class App {
     this.app.use('/login', loginRoutes);
     this.app.use('/profile', profileRoutes);
     this.app.use('/article', articleRoutes);
+    this.app.use('/genre', genreRoutes);
   }
 }
 
