@@ -7,6 +7,7 @@ import Genre from '../models/Genre.model';
 import Profile from '../models/Profile.model';
 import Song from '../models/Song.model';
 import { CustomRequest, UserSession } from '../types/music-box';
+import { filterDuplicateNames } from '../utils/filterNamesArray';
 import { slugGen } from '../utils/slugGen';
 
 interface StoreRequestBody {
@@ -28,17 +29,15 @@ class SongController {
       }
 
       try {
+        const userSession = req.session.user as UserSession;
+
         const { name, album, colaborators, genres } = req.body;
         if (!name) return res.status(400).json({ error: ['Nome da música não enviado'] });
         if (!genres) return res.status(400).json({ error: ['Nenhum gênero foi enviado'] });
 
-        const userSession = req.session.user as UserSession;
-
         const genresNames: string[] = JSON.parse(genres);
         if (genresNames.length === 0) return res.status(400).json({ error: ['Nenhum gênero foi enviado'] });
-
-        //* caso seja enviado um gênero repetido, isso irá filtrar.
-        const filteredGenres = genresNames.filter((genreName, index) => genresNames.indexOf(genreName) === index);
+        const filteredGenres = filterDuplicateNames(genresNames);
 
         const genresArray: Genre[] = [];
         for (const genreName of filteredGenres) {
@@ -49,9 +48,7 @@ class SongController {
 
         const colaboratorsSlugs: string[] = colaborators ? JSON.parse(colaborators) : [];
         const authors = [...colaboratorsSlugs, userSession.username];
-
-        //* caso seja enviado um usuário repetido, isso irá filtrar.
-        const filteredAuthors = authors.filter((author, index) => authors.indexOf(author) === index);
+        const filteredAuthors = filterDuplicateNames(authors);
 
         const profiles: Profile[] = [];
         for (const authorSlug of filteredAuthors) {
