@@ -7,7 +7,7 @@ import { profileImage } from '../../configs/multer';
 import Profile from '../../models/Profile.model';
 import { CustomRequest, UserSession } from '../../types/music-box';
 
-interface UpdateRequestBody {
+interface RequestBody {
   profileName?: string;
   bio?: string;
   local?: string;
@@ -16,7 +16,7 @@ interface UpdateRequestBody {
 
 const upload = multer(profileImage).single('imageUrl');
 
-export async function update(req: CustomRequest<UpdateRequestBody>, res: Response): Promise<void> {
+export async function update(req: CustomRequest<RequestBody>, res: Response): Promise<void> {
   return upload(req, res, async (error): Promise<Response> => {
     if (error instanceof MulterError) {
       return res.status(400).json({ errors: [error.field] });

@@ -10,7 +10,7 @@ import { CustomRequest, UserSession } from '../../types/music-box';
 import { filterDuplicateNames } from '../../utils/filterDuplicateNames';
 import { slugGen } from '../../utils/slugGen';
 
-interface StoreRequestBody {
+interface RequestBody {
   name: string;
   genres: string; //* array de gêneros (pelo menos um gênero)
   album?: string;
@@ -19,7 +19,7 @@ interface StoreRequestBody {
 
 const upload = multer(songs).single('song');
 
-export async function store(req: CustomRequest<StoreRequestBody>, res: Response): Promise<void> {
+export async function store(req: CustomRequest<RequestBody>, res: Response): Promise<void> {
   return upload(req, res, async (error): Promise<Response> => {
     if (error instanceof MulterError) {
       return res.status(400).json({ errors: [error.field] });

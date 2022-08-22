@@ -4,12 +4,12 @@ import { ValidationError } from 'sequelize';
 import User from '../../models/User.model';
 import { CustomRequest } from '../../types/music-box';
 
-interface loginRequestBody {
+interface RequestBody {
   login: string;
   password: string;
 }
 
-export async function login(req: CustomRequest<loginRequestBody>, res: Response): Promise<Response> {
+export async function login(req: CustomRequest<RequestBody>, res: Response): Promise<Response> {
   try {
     const { login, password } = req.body; //* login nesse caso será o email ou username.
 

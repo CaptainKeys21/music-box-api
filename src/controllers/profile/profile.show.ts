@@ -4,6 +4,7 @@ import Profile from '../../models/Profile.model';
 export async function show(req: Request, res: Response): Promise<Response> {
   try {
     const profile = await Profile.findOne({ where: { slug: req.params.slug } });
+
     if (!profile) {
       return res.status(404).json({ errors: ['Usuário não encontrado'] });
     }

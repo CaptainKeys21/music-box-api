@@ -3,12 +3,12 @@ import { ValidationError } from 'sequelize';
 import User from '../../models/User.model';
 import { CustomRequest, UserSession } from '../../types/music-box';
 
-interface UpdateRequestBody {
+interface RequestBody {
   username?: string;
   email?: string;
 }
 
-export async function update(req: CustomRequest<UpdateRequestBody>, res: Response): Promise<Response> {
+export async function update(req: CustomRequest<RequestBody>, res: Response): Promise<Response> {
   try {
     const userSession = req.session.user as UserSession;
     const user = await User.findOne({ where: { email: userSession.email } });

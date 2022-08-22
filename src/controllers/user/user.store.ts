@@ -4,13 +4,13 @@ import User from '../../models/User.model';
 import { CustomRequest } from '../../types/music-box';
 import { slugGen } from '../../utils/slugGen';
 
-interface StoreRequestBody {
+interface RequestBody {
   username: string;
   email: string;
   password: string;
 }
 
-export async function store(req: CustomRequest<StoreRequestBody>, res: Response): Promise<Response> {
+export async function store(req: CustomRequest<RequestBody>, res: Response): Promise<Response> {
   try {
     const { username, email, password } = req.body;
 
