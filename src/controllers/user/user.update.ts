@@ -8,6 +8,7 @@ interface RequestBody {
   email?: string;
 }
 
+//TODO ATUALIZA O SLUG DO PROFILE
 export async function update(req: CustomRequest<RequestBody>, res: Response): Promise<Response> {
   try {
     const userSession = req.session.user as UserSession;

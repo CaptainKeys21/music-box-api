@@ -39,7 +39,7 @@ export async function update(req: CustomRequest<RequestBody>, res: Response): Pr
         try {
           unlinkSync(resolve(__dirname, '..', '..', 'static', 'uploads', 'images', fileToDelete));
         } catch (error) {
-          //
+          console.log(error);
         }
       }
 

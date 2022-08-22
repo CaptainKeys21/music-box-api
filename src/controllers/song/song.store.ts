@@ -10,10 +10,57 @@ import { CustomRequest, UserSession } from '../../types/music-box';
 import { filterDuplicateNames } from '../../utils/filterDuplicateNames';
 import { slugGen } from '../../utils/slugGen';
 
+//* eu ainda vou conseguir fazer um generics pra essas duas funções!!
+async function getGenres(genres: string) {
+  const genresNames: string[] = JSON.parse(genres);
+  if (genresNames.length === 0) throw new Error('Nenhum gênero foi enviado');
+  const filteredGenres = filterDuplicateNames(genresNames);
+
+  const genresArray: Genre[] = [];
+  for (const genreName of filteredGenres) {
+    const genre = await Genre.findOne({ where: { name: genreName } });
+    if (!genre) throw new Error(`Gênero '${genreName}' inexistente!`);
+    genresArray.push(genre);
+  }
+
+  return genresArray;
+}
+
+async function getAuthors(userSession: UserSession, colaborators?: string) {
+  const colaboratorsSlugs: string[] = colaborators ? JSON.parse(colaborators) : [];
+  const authors = [...colaboratorsSlugs, userSession.username];
+  const filteredAuthors = filterDuplicateNames(authors);
+
+  const profiles: Profile[] = [];
+  for (const authorSlug of filteredAuthors) {
+    const profile = await Profile.findOne({ where: { slug: authorSlug } });
+    if (!profile) throw new Error(`Autor '${authorSlug}' inexistente!`);
+    profiles.push(profile);
+  }
+
+  return profiles;
+}
+
+async function setAlbum(albumSlug: string | undefined, song: Song) {
+  if (albumSlug) {
+    const foundAlbum = await Album.findOne({ where: { slug: albumSlug } });
+    if (!foundAlbum) {
+      /* como a música já foi criada e houve um erro, ela é deletada. O ideal seria nem ter criado a música.
+      Essa foi a forma mais prática que encontrei, mas é algo a ser revisto.*/
+      song.destroy(); //TODO
+      throw new Error('álbum inexistente!');
+    }
+    await song.setAlbum(foundAlbum);
+    return foundAlbum;
+  } else {
+    return await song.createAlbum({ name: song.name, slug: slugGen(), single: true });
+  }
+}
+
 interface RequestBody {
   name: string;
   genres: string; //* array de gêneros (pelo menos um gênero)
-  album?: string;
+  albumSlug?: string;
   colaborators?: string; //* colaborators será um array com os usernames dos colaboradores
 }
 
@@ -30,31 +77,12 @@ export async function store(req: CustomRequest<RequestBody>, res: Response): Pro
     try {
       const userSession = req.session.user as UserSession;
 
-      const { name, album, colaborators, genres } = req.body;
+      const { name, albumSlug, colaborators, genres } = req.body;
       if (!name) return res.status(400).json({ error: ['Nome da música não enviado'] });
       if (!genres) return res.status(400).json({ error: ['Nenhum gênero foi enviado'] });
 
-      const genresNames: string[] = JSON.parse(genres);
-      if (genresNames.length === 0) return res.status(400).json({ error: ['Nenhum gênero foi enviado'] });
-      const filteredGenres = filterDuplicateNames(genresNames);
-
-      const genresArray: Genre[] = [];
-      for (const genreName of filteredGenres) {
-        const genre = await Genre.findOne({ where: { name: genreName } });
-        if (!genre) return res.status(400).json({ error: [`Gênero '${genreName}' inexistente!`] });
-        genresArray.push(genre);
-      }
-
-      const colaboratorsSlugs: string[] = colaborators ? JSON.parse(colaborators) : [];
-      const authors = [...colaboratorsSlugs, userSession.username];
-      const filteredAuthors = filterDuplicateNames(authors);
-
-      const profiles: Profile[] = [];
-      for (const authorSlug of filteredAuthors) {
-        const profile = await Profile.findOne({ where: { slug: authorSlug } });
-        if (!profile) return res.status(400).json({ error: [`Autor '${authorSlug}' inexistente!`] });
-        profiles.push(profile);
-      }
+      const genresArray = await getGenres(genres);
+      const profiles = await getAuthors(userSession, colaborators);
 
       if (!req.file) {
         return res.status(400).json({ errors: ['Nenhuma música enviada!!'] });
@@ -63,25 +91,25 @@ export async function store(req: CustomRequest<RequestBody>, res: Response): Pro
       const filepath = `http://localhost:3001/uploads/songs/${req.file.filename}`;
 
       const song = await Song.create({ name, filename: filepath, slug: slugGen() });
+
       song.setProfiles(profiles);
       song.setGenres(genresArray);
 
-      if (album) {
-        const FoundAlbum = await Album.findOne({ where: { slug: album } });
-        if (!FoundAlbum) return res.status(400).json({ errors: ['álbum inexistente!'] });
-        await song.setAlbum(FoundAlbum);
-      } else {
-        await song.createAlbum({ name, slug: slugGen(), single: true });
-      }
+      const album = await setAlbum(albumSlug, song);
 
       const songGenres = (await song.getGenres()).map((genre) => genre.name);
+      const songAuthors = (await song.getProfiles()).map((profile) => profile.slug);
 
-      return res.status(200).json({ song, genres: songGenres });
+      return res.status(200).json({ song, genres: songGenres, authors: songAuthors, album: album.name });
     } catch (error) {
       if (error instanceof ValidationError) {
         return res.status(400).json({ errors: error.errors.map((err) => err.message) });
       }
-      console.log(error);
+
+      if (error instanceof Error) {
+        return res.status(400).json({ errors: [error.message] });
+      }
+
       return res.status(500).json({ errors: ['Erro desconhecido'] });
     }
   });
