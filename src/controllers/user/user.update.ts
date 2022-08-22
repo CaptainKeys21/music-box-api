@@ -21,6 +21,9 @@ export async function update(req: CustomRequest<RequestBody>, res: Response): Pr
     const { username: sentUsername, email: sentEmail } = req.body;
     const { username, email, id } = await user.update({ username: sentUsername, email: sentEmail });
 
+    const profile = await user.getProfile();
+    await profile.update({ slug: sentUsername });
+
     req.session.user = { username, email, profileId: userSession.profileId };
 
     return res.json({ id, username, email });
