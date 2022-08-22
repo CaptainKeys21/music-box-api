@@ -1,8 +1,8 @@
 //!! ESSE ARQUIVO PROVAVELMENTE SERÁ APAGADO NA PRODUÇÃO
 import { Router } from 'express';
-import GenreController from '../controllers/Genre.controller';
+import { store } from './genre.store';
 const router: Router = Router();
 
-router.get('/', GenreController.store);
+router.get('/', store);
 
 export default router;

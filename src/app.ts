@@ -1,11 +1,11 @@
 import './database';
 import express, { Application, urlencoded } from 'express';
-import userRoutes from './routes/user.routes';
-import songRoutes from './routes/song.routes';
-import loginRoutes from './routes/login.routes';
-import profileRoutes from './routes/profile.routes';
-import articleRoutes from './routes/articles/article.routes';
-import genreRoutes from './routes/genre.routes';
+import userRoutes from './controllers/user/user.routes';
+import songRoutes from './controllers/song/song.routes';
+import loginRoutes from './controllers/login/login.routes';
+import profileRoutes from './controllers/profile/profile.routes';
+import articleRoutes from './controllers/article/articles/article.routes';
+import genreRoutes from './controllers/genre/genre.routes';
 
 import sessionConfig from './middlewares/sessionConfig';
 import { resolve } from 'path';
