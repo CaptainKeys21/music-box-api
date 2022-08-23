@@ -146,6 +146,7 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
     return true;
   }
 
+  //* retorna um array com perfis a partir de uma array com os slugs.
   static async getProfilesBySlugs(profilesSlugs: string[]) {
     const errors: Error[] = [];
 

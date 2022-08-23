@@ -44,6 +44,7 @@ export default class Genre extends Model<InferAttributes<Genre>, InferCreationAt
     this.belongsToMany(models.Song, { through: 'Song_Genre' });
   }
 
+  //* retorna um array com gêneros a partir de uma array com os gêneros.
   static async getGenresByNames(genresNames: string[]) {
     const errors: Error[] = [];
 

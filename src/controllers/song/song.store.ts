@@ -12,11 +12,13 @@ import { slugGen } from '../../utils/slugGen';
 
 interface RequestBody {
   name: string;
-  genres: string; //* array de gêneros (pelo menos um gênero)
+  genres: string; //* JSON com um array de gêneros (pelo menos um gênero)
   albumSlug?: string;
-  colaborators?: string; //* array com os slugs dos colaboradores
+  colaborators?: string; //* JSON com um array dos slugs dos colaboradores
 }
 
+//? essas três funções foram criadas para "limpar" o código do controller e deixá-lo mais legível
+//* define (ou cria) o álbum que a música pertence
 async function setAlbum(albumSlug: string | undefined, song: Song) {
   if (albumSlug) {
     const album = await Album.findOne({ where: { slug: albumSlug } });
@@ -33,6 +35,7 @@ async function setAlbum(albumSlug: string | undefined, song: Song) {
   }
 }
 
+//* converte o JSON dos gêneros e retorna um array com os gêneros
 async function getGenres(genresJSON: string) {
   const genresNames: string[] = genresJSON ? JSON.parse(genresJSON) : [];
   if (genresNames.length === 0) throw new Error('Nenhum gênero foi enviado');
@@ -40,9 +43,10 @@ async function getGenres(genresJSON: string) {
   return await Genre.getGenresByNames(filteredGenres);
 }
 
+//* converte o JSON dos autores e retorna um array com os perfis dos colaboradores
 async function getAuthors(colaborators: string | undefined, creatorSlug: string) {
   const profilesSlugs: string[] = colaborators ? JSON.parse(colaborators) : [];
-  profilesSlugs.push(creatorSlug);
+  profilesSlugs.push(creatorSlug); //* adiciona o slug do usuário criador
   const filteredAuthors = filterDuplicateElements(profilesSlugs);
   return await Profile.getProfilesBySlugs(filteredAuthors);
 }
