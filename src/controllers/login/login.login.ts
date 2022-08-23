@@ -13,8 +13,14 @@ export async function login(req: CustomRequest<RequestBody>, res: Response): Pro
   try {
     const { login, password } = req.body; //* login nesse caso será o email ou username.
 
-    if (!login) return res.status(400).json({ error: ['login não pode ser vazio'] });
-    if (!password) return res.status(400).json({ error: ['senha não pode ser vazia'] });
+    const errors: Error[] = [];
+
+    if (!login) errors.push(new Error('login não pode ser vazio'));
+    if (!password) errors.push(new Error('senha não pode ser vazia'));
+
+    if (errors.length > 0) {
+      return res.status(404).json({ error: errors.map((error) => error.message) });
+    }
 
     //* encontra no banco se o email ou o username forem iguais ao login enviado.
     const user = await User.findOne({
@@ -23,10 +29,8 @@ export async function login(req: CustomRequest<RequestBody>, res: Response): Pro
       },
     });
 
-    if (!user) return res.status(404).json({ error: ['usuário inexistente'] });
-
-    if (!user.passwordIsValid(password)) {
-      return res.status(401).json({ error: ['senha inválida'] });
+    if (!user || !user.passwordIsValid(password)) {
+      return res.status(401).json({ error: ['usuário ou senha inválidos'] });
     }
 
     const { email, username } = user;

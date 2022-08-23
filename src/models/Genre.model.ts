@@ -43,4 +43,18 @@ export default class Genre extends Model<InferAttributes<Genre>, InferCreationAt
   static associate(models: { [key: string]: ModelStatic<Model> }) {
     this.belongsToMany(models.Song, { through: 'Song_Genre' });
   }
+
+  static async getGenresByNames(genresNames: string[]) {
+    const errors: Error[] = [];
+
+    const genresArray: Genre[] = [];
+    for (const genreName of genresNames) {
+      const genre = await Genre.findOne({ where: { name: genreName } });
+      if (!genre) errors.push(new Error(`Gênero '${genreName}' inexistente!`));
+      else genresArray.push(genre);
+    }
+
+    if (errors.length > 0) throw errors.map((error) => error.message);
+    return genresArray;
+  }
 }

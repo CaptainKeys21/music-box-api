@@ -4,5 +4,5 @@
  * @returns array filtrado.
  */
 
-export const filterDuplicateNames = (array: string[]) =>
+export const filterDuplicateElements = <T>(array: T[]) =>
   array.filter((element, index) => array.indexOf(element) === index);

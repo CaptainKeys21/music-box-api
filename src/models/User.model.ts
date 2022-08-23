@@ -51,9 +51,14 @@ export default class User extends Model<
 
         username: {
           type: DataTypes.STRING,
-          defaultValue: '',
           allowNull: false,
           validate: {
+            notEmpty: {
+              msg: 'Nome de usuário não pode ser vazio',
+            },
+            notNull: {
+              msg: 'Nome de usuário não pode ser vazio',
+            },
             len: {
               args: [3, 50],
               msg: 'Nome de usuário deve conter entre 3 e 50 caracteres.',

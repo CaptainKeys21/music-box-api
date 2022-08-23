@@ -48,12 +48,18 @@ export default class Song extends Model<InferAttributes<Song>, InferCreationAttr
           type: new DataTypes.STRING(100),
           allowNull: false,
           validate: {
+            notNull: {
+              msg: 'Nome da música não pode ser vazia',
+            },
+            notEmpty: {
+              msg: 'Nome da música não pode ser vazia',
+            },
             len: {
-              args: [0, 100],
+              args: [3, 100],
               msg: 'Nome da Música pode conter no máximo 100 caracteres',
             },
             is: {
-              args: /^[\w\d À-ú]+$/i,
+              args: /^[\w\d _À-ú]+$/i,
               msg: 'Nome da Música não pode conter caracteres especiais',
             },
           },

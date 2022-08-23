@@ -145,4 +145,18 @@ export default class Profile extends Model<InferAttributes<Profile>, InferCreati
 
     return true;
   }
+
+  static async getProfilesBySlugs(profilesSlugs: string[]) {
+    const errors: Error[] = [];
+
+    const profiles: Profile[] = [];
+    for (const profileSlug of profilesSlugs) {
+      const profile = await Profile.findOne({ where: { slug: profileSlug } });
+      if (!profile) errors.push(new Error(`Autor '${profileSlug}' inexistente!`));
+      else profiles.push(profile);
+    }
+
+    if (errors.length > 0) throw errors.map((error) => error.message);
+    return profiles;
+  }
 }
