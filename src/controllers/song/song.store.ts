@@ -38,7 +38,11 @@ async function setAlbum(albumSlug: string | undefined, song: Song) {
 //* converte o JSON dos gêneros e retorna um array com os gêneros
 async function getGenres(genresJSON: string) {
   const genresNames: string[] = genresJSON ? JSON.parse(genresJSON) : [];
-  if (genresNames.length === 0) throw new Error('Nenhum gênero foi enviado');
+
+  if (genresNames.length === 0) {
+    throw new Error('Nenhum gênero foi enviado');
+  }
+
   const filteredGenres = filterDuplicateElements(genresNames);
   return await Genre.getGenresByNames(filteredGenres);
 }

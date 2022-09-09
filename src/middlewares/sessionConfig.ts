@@ -1,8 +1,10 @@
 //* middleware de configuração do express-session.
-import session, { SessionConfig } from 'express-session';
+import session from 'express-session';
 
-export default session(<SessionConfig>{
-  secret: process.env.SESSION_SECRET,
+const secret = process.env.SESSION_SECRET as string;
+
+export default session({
+  secret,
   resave: false,
   saveUninitialized: false,
   cookie: {

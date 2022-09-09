@@ -7,14 +7,4 @@ declare module 'express-session' {
     loggedIn: boolean;
     user: UserSession | null;
   }
-
-  //* interface de configuração da sessão.
-  interface SessionConfig {
-    secret: string;
-    resave: boolean;
-    saveUninitialized: boolean;
-    cookie: {
-      maxAge: number;
-    };
-  }
 }
